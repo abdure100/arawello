@@ -1,0 +1,31 @@
+{
+  // Copy to ~/.openclaw/openclaw.json and set baseUrl + env var for your API.
+  // See docs/providers/openai-compatible.md and docs/gateway/configuration-examples.md
+  agents: {
+    defaults: {
+      model: { primary: "custom/sphere-llm" },
+      models: { "custom/sphere-llm": {} },
+    },
+  },
+  models: {
+    mode: "merge",
+    providers: {
+      custom: {
+        baseUrl: "https://arawello.ai/v1",
+        apiKey: "OPENAI_COMPAT_API_KEY",
+        api: "openai-completions",
+        models: [
+          {
+            id: "sphere-llm",
+            name: "Sphere LLM",
+            reasoning: false,
+            input: ["text"],
+            cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 },
+            contextWindow: 128000,
+            maxTokens: 16384,
+          },
+        ],
+      },
+    },
+  },
+}

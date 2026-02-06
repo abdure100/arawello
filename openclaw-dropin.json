@@ -1,0 +1,81 @@
+{
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "agents": {
+    "defaults": {
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      },
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "workspace": "/home/node/.openclaw/workspace",
+      "model": {
+        "primary": "custom/sphere-llm"
+      },
+      "models": {
+        "custom/sphere-llm": {}
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "custom": {
+        "baseUrl": "https://arawello.ai/v1",
+        "apiKey": "OPENAI_COMPAT_API_KEY",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "sphere-llm",
+            "name": "Sphere LLM",
+            "reasoning": false,
+            "input": ["text"],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 8192,
+            "maxTokens": 2048
+          }
+        ]
+      }
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": "c53c11016b2283318b78dd39d7c1e1da278ebac8809be0bd135c496b235785d2"
+    },
+    "port": 18789,
+    "bind": "lan",
+    "controlUi": {
+      "allowInsecureAuth": true,
+      "dangerouslyDisableDeviceAuth": true
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    }
+  },
+  "skills": {
+    "install": {
+      "nodeManager": "npm"
+    }
+  },
+  "wizard": {
+    "lastRunAt": "2026-02-04T02:57:30.382Z",
+    "lastRunVersion": "2026.2.2",
+    "lastRunCommand": "onboard",
+    "lastRunMode": "local"
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.2.2",
+    "lastTouchedAt": "2026-02-04T02:57:30.388Z"
+  }
+}

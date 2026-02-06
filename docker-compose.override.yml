@@ -1,0 +1,8 @@
+# Local Docker: pass arawello.ai env into gateway (see .env).
+# Remove this file if you prefer the default compose only.
+
+services:
+  openclaw-gateway:
+    environment:
+      OPENAI_COMPAT_BASE_URL: ${OPENAI_COMPAT_BASE_URL:-}
+      OPENAI_COMPAT_API_KEY: ${OPENAI_COMPAT_API_KEY:-}

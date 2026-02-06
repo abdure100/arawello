@@ -1,0 +1,14 @@
+# Example override for running the gateway in Docker with a custom LLM (e.g. arawello.ai).
+# Copy to docker-compose.override.yml and set the env vars in .env or export before compose.
+#
+# Usage:
+#   cp docker-compose.override.example.yml docker-compose.override.yml
+#   # In .env or export: OPENAI_COMPAT_BASE_URL, OPENAI_COMPAT_API_KEY, OPENCLAW_GATEWAY_TOKEN,
+#   # and OPENCLAW_GATEWAY_BIND=0.0.0.0 (so the gateway is reachable from Cloudflare tunnel).
+#   docker compose up -d openclaw-gateway
+
+services:
+  openclaw-gateway:
+    environment:
+      OPENAI_COMPAT_BASE_URL: ${OPENAI_COMPAT_BASE_URL:-}
+      OPENAI_COMPAT_API_KEY: ${OPENAI_COMPAT_API_KEY:-}
