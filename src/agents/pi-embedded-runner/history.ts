@@ -55,12 +55,18 @@ export function getDmHistoryLimitFromSessionKey(
     return undefined;
   }
 
-  const kind = providerParts[1]?.toLowerCase();
-  const userIdRaw = providerParts.slice(2).join(":");
-  const userId = stripThreadSuffix(userIdRaw);
-  if (kind !== "dm") {
+  // WhatsApp/Signal/Discord etc: agent:main:telegram:dm:userId -> kind=dm at index 1
+  // Telegram: agent:main:telegram:default:dm:userId -> dm at index 2
+  const kindAt1 = providerParts[1]?.toLowerCase();
+  const kindAt2 = providerParts[2]?.toLowerCase();
+  const isDm = kindAt1 === "dm" || kindAt2 === "dm";
+  if (!isDm) {
     return undefined;
   }
+
+  const userIdRaw =
+    kindAt1 === "dm" ? providerParts.slice(2).join(":") : providerParts.slice(3).join(":");
+  const userId = stripThreadSuffix(userIdRaw);
 
   const getLimit = (
     providerConfig:
