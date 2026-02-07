@@ -42,6 +42,18 @@ function stripFrontMatter(content: string): string {
   return trimmed;
 }
 
+/** Minimal fallback when template file is not packaged (e.g. in minimal Docker images). */
+const TEMPLATE_FALLBACKS: Record<string, string> = {
+  [DEFAULT_AGENTS_FILENAME]:
+    "# Workspace\n\nRead SOUL.md and USER.md when present. Be helpful and concise.",
+  [DEFAULT_SOUL_FILENAME]: "# Identity\n\nYou are a helpful assistant.",
+  [DEFAULT_TOOLS_FILENAME]: "# Tools\n\nUse available skills and tools as needed.",
+  [DEFAULT_IDENTITY_FILENAME]: "# Identity\n\nSame as SOUL.md.",
+  [DEFAULT_USER_FILENAME]: "# User\n\nYou are helping the person who sent the message.",
+  [DEFAULT_HEARTBEAT_FILENAME]: "# Heartbeat\n\nIf nothing needs attention, reply HEARTBEAT_OK.",
+  [DEFAULT_BOOTSTRAP_FILENAME]: "# Bootstrap\n\nFirst-run placeholder.",
+};
+
 async function loadTemplate(name: string): Promise<string> {
   const templateDir = await resolveWorkspaceTemplateDir();
   const templatePath = path.join(templateDir, name);
@@ -49,6 +61,10 @@ async function loadTemplate(name: string): Promise<string> {
     const content = await fs.readFile(templatePath, "utf-8");
     return stripFrontMatter(content);
   } catch {
+    const fallback = TEMPLATE_FALLBACKS[name];
+    if (fallback) {
+      return fallback;
+    }
     throw new Error(
       `Missing workspace template: ${name} (${templatePath}). Ensure docs/reference/templates are packaged.`,
     );

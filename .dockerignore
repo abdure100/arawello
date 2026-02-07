@@ -1,5 +1,9 @@
 .git
+**/.git
 .worktrees
+.env
+.env.*
+!.env.example
 .bun-cache
 .bun
 .tmp
@@ -46,3 +50,11 @@ Swabble/
 Core/
 Users/
 vendor/
+
+# shrink build context (build does not need these)
+docs/
+skills/
+*.tar
+*.tar.gz
+openclaw-gateway*.tar
+build.log

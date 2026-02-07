@@ -141,6 +141,8 @@ export function renderOverview(props: OverviewProps) {
           <label class="field">
             <span>Gateway Token</span>
             <input
+              type="password"
+              autocomplete="off"
               .value=${props.settings.token}
               @input=${(e: Event) => {
                 const v = (e.target as HTMLInputElement).value;

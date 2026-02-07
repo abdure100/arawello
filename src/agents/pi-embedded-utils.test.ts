@@ -21,6 +21,15 @@ describe("extractAssistantText", () => {
     expect(extractAssistantText(msg)).toBe("");
   });
 
+  it("extracts text from output_text blocks (Open Responses / OpenAI-compat style)", () => {
+    const msg = {
+      role: "assistant",
+      content: [{ type: "output_text", text: "Response from output_text block." }],
+      timestamp: Date.now(),
+    } as AssistantMessage;
+    expect(extractAssistantText(msg)).toBe("Response from output_text block.");
+  });
+
   it("strips Minimax tool invocation XML from text", () => {
     const msg: AssistantMessage = {
       role: "assistant",

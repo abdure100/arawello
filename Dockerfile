@@ -29,6 +29,9 @@ RUN OPENCLAW_A2UI_SKIP_MISSING=1 pnpm build
 ENV OPENCLAW_PREFER_PNPM=1
 RUN pnpm ui:build
 
+# Remove devDependencies to shrink image (faster push/pull)
+RUN pnpm prune --prod
+
 ENV NODE_ENV=production
 
 # Allow non-root user to write temp files during runtime/tests.
