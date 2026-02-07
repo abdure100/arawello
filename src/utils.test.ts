@@ -167,4 +167,11 @@ describe("resolveUserPath", () => {
   it("resolves relative paths", () => {
     expect(resolveUserPath("tmp/dir")).toBe(path.resolve("tmp/dir"));
   });
+
+  it("rewrites /home/node paths to current user home (Docker-style)", () => {
+    expect(resolveUserPath("/home/node")).toBe(path.resolve(os.homedir()));
+    expect(resolveUserPath("/home/node/.openclaw/workspace")).toBe(
+      path.resolve(os.homedir(), ".openclaw", "workspace"),
+    );
+  });
 });

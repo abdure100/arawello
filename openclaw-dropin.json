@@ -11,7 +11,7 @@
       "compaction": {
         "mode": "safeguard"
       },
-      "workspace": "/home/node/.openclaw/workspace",
+      "workspace": "~/.openclaw/workspace",
       "model": {
         "primary": "custom/sphere-llm"
       },

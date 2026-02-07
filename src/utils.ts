@@ -242,7 +242,16 @@ export function resolveUserPath(input: string): string {
     const expanded = trimmed.replace(/^~(?=$|[\\/])/, os.homedir());
     return path.resolve(expanded);
   }
-  return path.resolve(trimmed);
+  const resolved = path.resolve(trimmed);
+  // Docker-style /home/node paths: rewrite to current user's home so bare-metal runs don't get EACCES
+  if (resolved === "/home/node" || resolved.startsWith("/home/node/")) {
+    const suffix = resolved.slice("/home/node".length);
+    if (!suffix || suffix === "/") {
+      return os.homedir();
+    }
+    return path.join(os.homedir(), suffix.slice(1));
+  }
+  return resolved;
 }
 
 export function resolveConfigDir(
