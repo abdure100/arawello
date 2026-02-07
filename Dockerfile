@@ -30,6 +30,7 @@ ENV OPENCLAW_PREFER_PNPM=1
 RUN pnpm ui:build
 
 # Remove devDependencies to shrink image (faster push/pull)
+ENV CI=true
 RUN pnpm prune --prod
 
 ENV NODE_ENV=production
