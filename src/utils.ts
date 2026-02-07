@@ -254,6 +254,15 @@ export function resolveUserPath(input: string): string {
   return resolved;
 }
 
+/** Rewrite /home/node to current user home (for use at mkdir sites when path may not have gone through resolveUserPath). */
+export function ensureNotHomeNode(dir: string): string {
+  if (dir === "/home/node" || dir.startsWith("/home/node/")) {
+    const suffix = dir.slice("/home/node".length);
+    return suffix ? path.join(os.homedir(), suffix.slice(1)) : os.homedir();
+  }
+  return dir;
+}
+
 export function resolveConfigDir(
   env: NodeJS.ProcessEnv = process.env,
   homedir: () => string = os.homedir,

@@ -19,7 +19,7 @@ import { resolveSignalReactionLevel } from "../../signal/reaction-level.js";
 import { resolveTelegramInlineButtonsScope } from "../../telegram/inline-buttons.js";
 import { resolveTelegramReactionLevel } from "../../telegram/reaction-level.js";
 import { buildTtsSystemPromptHint } from "../../tts/tts.js";
-import { resolveUserPath } from "../../utils.js";
+import { ensureNotHomeNode, resolveUserPath } from "../../utils.js";
 import { normalizeMessageChannel } from "../../utils/message-channel.js";
 import { isReasoningTagProvider } from "../../utils/provider-utils.js";
 import { resolveOpenClawAgentDir } from "../agent-paths.js";
@@ -163,18 +163,21 @@ export async function compactEmbeddedPiSessionDirect(
     };
   }
 
-  await fs.mkdir(resolvedWorkspace, { recursive: true });
+  const safeWorkspace = ensureNotHomeNode(resolvedWorkspace);
+  await fs.mkdir(safeWorkspace, { recursive: true });
   const sandboxSessionKey = params.sessionKey?.trim() || params.sessionId;
   const sandbox = await resolveSandboxContext({
     config: params.config,
     sessionKey: sandboxSessionKey,
-    workspaceDir: resolvedWorkspace,
+    workspaceDir: safeWorkspace,
   });
-  const effectiveWorkspace = sandbox?.enabled
-    ? sandbox.workspaceAccess === "rw"
-      ? resolvedWorkspace
-      : sandbox.workspaceDir
-    : resolvedWorkspace;
+  const effectiveWorkspace = ensureNotHomeNode(
+    sandbox?.enabled
+      ? sandbox.workspaceAccess === "rw"
+        ? safeWorkspace
+        : sandbox.workspaceDir
+      : safeWorkspace,
+  );
   await fs.mkdir(effectiveWorkspace, { recursive: true });
   await ensureSessionHeader({
     sessionFile: params.sessionFile,
@@ -395,7 +398,7 @@ export async function compactEmbeddedPiSessionDirect(
       });
 
       const { session } = await createAgentSession({
-        cwd: resolvedWorkspace,
+        cwd: effectiveWorkspace,
         agentDir,
         authStorage,
         modelRegistry,

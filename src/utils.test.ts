@@ -6,6 +6,7 @@ import {
   assertWebChannel,
   CONFIG_DIR,
   ensureDir,
+  ensureNotHomeNode,
   jidToE164,
   normalizeE164,
   normalizePath,
@@ -172,6 +173,20 @@ describe("resolveUserPath", () => {
     expect(resolveUserPath("/home/node")).toBe(path.resolve(os.homedir()));
     expect(resolveUserPath("/home/node/.openclaw/workspace")).toBe(
       path.resolve(os.homedir(), ".openclaw", "workspace"),
+    );
+  });
+});
+
+describe("ensureNotHomeNode", () => {
+  it("rewrites /home/node to homedir", () => {
+    expect(ensureNotHomeNode("/home/node")).toBe(path.resolve(os.homedir()));
+    expect(ensureNotHomeNode("/home/node/.openclaw/workspace")).toBe(
+      path.resolve(os.homedir(), ".openclaw", "workspace"),
+    );
+  });
+  it("leaves other paths unchanged", () => {
+    expect(ensureNotHomeNode("/home/ubuntu/.openclaw/workspace")).toBe(
+      "/home/ubuntu/.openclaw/workspace",
     );
   });
 });
