@@ -809,6 +809,10 @@ export async function runEmbeddedAttempt(
           }
         } catch (err) {
           promptError = err;
+          const errMsg = describeUnknownError(err);
+          log.warn(
+            `embedded run prompt failed: runId=${params.runId} provider=${params.provider} model=${params.modelId} error=${errMsg}`,
+          );
         } finally {
           log.debug(
             `embedded run prompt end: runId=${params.runId} sessionId=${params.sessionId} durationMs=${Date.now() - promptStartedAt}`,
@@ -875,6 +879,12 @@ export async function runEmbeddedAttempt(
       // When lastAssistant has no extractable text (e.g. provider format), use last assistantTexts so UI still gets a reply.
       const fallbackText =
         assistantTexts.length > 0 ? assistantTexts[assistantTexts.length - 1]?.trim() : undefined;
+
+      if (!promptError && !fallbackText && !lastAssistant?.content?.length) {
+        log.warn(
+          `embedded run completed with no assistant content: runId=${params.runId} provider=${params.provider} model=${params.modelId} (model may not have been called or returned empty/unsupported format)`,
+        );
+      }
 
       // Emit lifecycle "end" (and assistant from lastAssistant or fallbackText if any) so server-chat gets the reply
       // when the provider never streamed (e.g. sphere-llm). handleAgentEnd no longer emits "end".
